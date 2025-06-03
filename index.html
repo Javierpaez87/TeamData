@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Consulta de Datos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2em;
+      background: #f4f4f4;
+    }
+    input, button {
+      padding: 0.5em;
+      font-size: 1em;
+      margin-top: 1em;
+    }
+    .resultado {
+      margin-top: 2em;
+      background: white;
+      padding: 1em;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Consulta de Información</h1>
+  <p>Ingresá tu email para ver tu información:</p>
+  <input type="email" id="emailInput" placeholder="tu@email.com">
+  <button onclick="buscarInfo()">Enviar</button>
+
+  <div class="resultado" id="resultado"></div>
+
+  <script>
+    async function buscarInfo() {
+      const email = document.getElementById('emailInput').value;
+      const resultadoDiv = document.getElementById('resultado');
+      
+      if (!email) {
+        resultadoDiv.innerHTML = "Por favor ingresá un email.";
+        return;
+      }
+
+      const url = "TU_URL_DEL_APPS_SCRIPT" + "?email=" + encodeURIComponent(email);
+      
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.error) {
+          resultadoDiv.innerHTML = "<strong>" + data.error + "</strong>";
+        } else {
+          resultadoDiv.innerHTML = `
+            <p><strong>Email:</strong> ${data.email}</p>
+            <p><strong>Nombre:</strong> ${data.nombre}</p>
+            <p><strong>Equipo:</strong> ${data.equipo}</p>
+            <p><strong>Team Lead:</strong> ${data["team lead"]}</p>
+          `;
+        }
+      } catch (err) {
+        resultadoDiv.innerHTML = "Hubo un error al consultar la información.";
+      }
+    }
+  </script>
+</body>
+</html>
